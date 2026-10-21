@@ -6,11 +6,13 @@
     <div class="card">
         <div class="card-header">
             <h2>Profile</h2>
-            {{-- Tombol Edit (mode view) --}}
             <button id="btn-edit" class="btn-edit" onclick="toggleEdit(true)">Edit</button>
-            {{-- Tombol Batal (mode edit) --}}
             <button id="btn-batal" class="btn-batal" onclick="toggleEdit(false)" style="display:none">Batal</button>
         </div>
+
+        @if(session('success'))
+            <div class="alert-success">{{ session('success') }}</div>
+        @endif
 
         {{-- ── MODE VIEW ── --}}
         <table class="profile-table" id="mode-view">
@@ -19,12 +21,20 @@
                 <td>{{ $nama }}</td>
             </tr>
             <tr>
+                <th>Email</th>
+                <td>{{ Auth::user()->email }}</td>
+            </tr>
+            <tr>
                 <th>Umur</th>
                 <td>
-                    @if($umur >= 17)
-                        {{ $umur }} tahun
+                    @if($umur)
+                        @if($umur >= 17)
+                            {{ $umur }} tahun
+                        @else
+                            {{ $umur }} tahun (di bawah umur)
+                        @endif
                     @else
-                        {{ $umur }} tahun (di bawah umur)
+                        <span class="text-muted">Belum diisi</span>
                     @endif
                 </td>
             </tr>
@@ -47,14 +57,14 @@
                 <tr>
                     <th>Nama</th>
                     <td>
-                        <input type="text" name="nama" value="{{ $nama }}" class="input-field">
+                        <input type="text" name="nama" value="{{ old('nama', $nama) }}" class="input-field">
                         @error('nama') <span class="error-msg">{{ $message }}</span> @enderror
                     </td>
                 </tr>
                 <tr>
                     <th>Umur</th>
                     <td>
-                        <input type="number" name="umur" value="{{ $umur }}" class="input-field" style="width:80px">
+                        <input type="number" name="umur" value="{{ old('umur', $umur) }}" class="input-field" style="width:80px">
                         @error('umur') <span class="error-msg">{{ $message }}</span> @enderror
                     </td>
                 </tr>
@@ -64,7 +74,7 @@
                         <select name="jenis_sepeda" class="select-input">
                             <option value="" disabled {{ $pilihan === null ? 'selected' : '' }}>-- Pilih --</option>
                             @foreach($jenis_sepeda as $sepeda)
-                                <option value="{{ $sepeda }}" {{ $pilihan === $sepeda ? 'selected' : '' }}>
+                                <option value="{{ $sepeda }}" {{ (old('jenis_sepeda', $pilihan) === $sepeda) ? 'selected' : '' }}>
                                     {{ $sepeda }}
                                 </option>
                             @endforeach
@@ -89,7 +99,6 @@
             document.getElementById('btn-batal').style.display  = isEdit ? 'inline-block' : 'none';
         }
 
-        // Jika ada error validasi, langsung buka mode edit
         @if($errors->any())
             toggleEdit(true);
         @endif
