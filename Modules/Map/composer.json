@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/map",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Map\\": "app/",
+            "Modules\\Map\\Database\\Factories\\": "database/factories/",
+            "Modules\\Map\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Map\\Tests\\": "tests/"
+        }
+    }
+}
