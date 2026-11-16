@@ -3,6 +3,7 @@
 namespace Modules\Report\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +33,7 @@ class ReportController extends Controller
         $query = Report::with('user:id,name,email,role,phone_number');
 
         // Role restriction: Rider only sees their own reports
+        /** @var \App\Models\User $user */
         if ($user->isRider()) {
             $query->where('user_id', $user->id);
         }
@@ -110,6 +112,7 @@ class ReportController extends Controller
         $user = Auth::user();
         $report = Report::with('user:id,name,email,phone_number')->findOrFail($id);
 
+        /** @var \App\Models\User $user */
         if ($user->isRider() && $report->user_id !== $user->id) {
             return response()->json([
                 'success' => false,
@@ -133,6 +136,7 @@ class ReportController extends Controller
         $report = Report::findOrFail($id);
 
         // Check ownership and pending status for Rider
+        /** @var \App\Models\User $user */
         if ($user->isRider()) {
             if ($report->user_id !== $user->id) {
                 return response()->json([
@@ -182,7 +186,7 @@ class ReportController extends Controller
     {
         $user = Auth::user();
         $report = Report::findOrFail($id);
-
+        /** @var \App\Models\User $user */
         if ($user->isRider()) {
             if ($report->user_id !== $user->id) {
                 return response()->json([
@@ -218,7 +222,7 @@ class ReportController extends Controller
     public function verifyStatus(Request $request, string $id): JsonResponse
     {
         $user = Auth::user();
-
+        /** @var \App\Models\User $user */
         if (! $user->isAdmin()) {
             return response()->json([
                 'success' => false,
